@@ -6,8 +6,8 @@ using System.Collections.Generic;
 /*
  * Each PU is a 2D square 10^9 by 10^9
  * Each PU has Galactic Diameter d where d is an integer
- * Each star is ecatly x light years from its universe's left edge and y light years from its universe's bottom edge,
- *      where x and y are non-negative integers
+ * Each star is ecatly x light years from its universe's left edge and y light years from 
+ *      its universe's bottom edge, where x and y are non-negative integers
  * Stars are clustered into galaxies. Each galaxy consist of one or more stars. each star is at most
  *      d light years from every other star in its galaxy. Any two stars from different galaxies are
  *      more than d light years apart
@@ -17,32 +17,19 @@ using System.Collections.Generic;
  *      
  *      The first line is Galactic diameter 1 <= d <= 10^6 and star count 1 <= k <= 10^6
  *      
- *      There are exactly k more lines. Each line contains 0<=x<=10^9 and 0<=y<=10^9. no two lines are identical
+ *      There are exactly k more lines. Each line contains 0<=x<=10^9 and 0<=y<=10^9. 
+ *      no two lines are identical
  *      
  *      The input is guaranteed to obey the clustering constraint described above
  *      
  * Output:
- *      If the PU described by the input has a galaxy containing more than half of the stars, display the number of stars
- *      in the galaxy. Otherwise display NO
+ *      If the PU described by the input has a galaxy containing more than half of the stars, 
+ *      display the number of stars in the galaxy. Otherwise display NO
  *      
  *      
  * Majority element algorithm will be best here.
  * Use long instead of int for x and y
 */
-
-/* GetInput()
- * Calculate(stars)
- * {
- *      FindMajority(stars)
- *      if(have majority)
- *          return number of majority
- *      else return false
- * }
- * ReturnOutput()
-*/
-
-
-
 
 namespace PS3_5_Galaxy_Quest
 {
@@ -202,11 +189,23 @@ namespace PS3_5_Galaxy_Quest
             string usr_input;
             string[] temp_nums;
             int[] parameters;
-            long[] temp_star;
+            long[] temp_star = { 3, 8 };
             List<long[]> stars = new List<long[]>();
             long result;
 
+            Random rand = new Random();
+            int d = 3;
+            int k = 20;
 
+            for (int i = 0; i < k; i++)
+            {
+                temp_star[0] = rand.Next(0, d);
+                temp_star[1] = rand.Next(0, d);
+                stars.Add(temp_star);
+            }
+            result = 
+
+            /*
             // Get galactic diameter d and star count k 
             // as parameters[0] and parameters[1] respectively.
             usr_input = Console.ReadLine();
@@ -222,6 +221,8 @@ namespace PS3_5_Galaxy_Quest
             }
 
             result = CalculateGalaxies(stars, parameters[0], parameters[1]);
+            */
+            result = CalculateGalaxies(stars, d, k);
             if (result > 0)
                 Console.WriteLine(result);
             else

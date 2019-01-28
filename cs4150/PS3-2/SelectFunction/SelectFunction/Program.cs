@@ -20,21 +20,21 @@ namespace SelectFunction
                 return B[k - loA];
             if (hiB < loB)
                 return A[k - loB];
-            int i = (loA + hiA) / 2;
-            int j = (loB + hiB) / 2;
-            if (A[i] > B[j])
+            int midA = (loA + hiA) / 2;
+            int midB = (loB + hiB) / 2;
+            if (A[midA] > B[midB])
             {
-                if (k <= (i + j))
-                    return SelectHelper(A, loA, i - 1, B, loB, j, k);
+                if (k <= (midA + midB))
+                    return SelectHelper(A, loA, midA + 1, B, loB, hiB, k);
                 else
-                    return SelectHelper(A, i, hiA, B, j + 1, hiB, k);
+                    return SelectHelper(A, loA, hiA, B, midB + 1, hiB, k);
             }
             else
             {
-                if (k <= (i + j))
-                    return SelectHelper(A, loA, i, B, loB, j - 1, k);
+                if (k <= (midA + midB))
+                    return SelectHelper(A, loA, hiA, B, loB, midB + 1, k);
                 else
-                    return SelectHelper(A, i + 1, hiA, B, j, hiB, k);
+                    return SelectHelper(A, loA, midA + 1, B, loB, hiB, k);
             }
 
         }
