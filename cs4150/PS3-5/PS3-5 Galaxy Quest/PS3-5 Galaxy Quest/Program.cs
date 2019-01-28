@@ -2,10 +2,53 @@
 using System.Collections.Generic;
 
 
+
+/*
+ * Each PU is a 2D square 10^9 by 10^9
+ * Each PU has Galactic Diameter d where d is an integer
+ * Each star is ecatly x light years from its universe's left edge and y light years from its universe's bottom edge,
+ *      where x and y are non-negative integers
+ * Stars are clustered into galaxies. Each galaxy consist of one or more stars. each star is at most
+ *      d light years from every other star in its galaxy. Any two stars from different galaxies are
+ *      more than d light years apart
+ * 
+ * Input:
+ *      Each input describes a single PU. All numbers in the input are integers.
+ *      
+ *      The first line is Galactic diameter 1 <= d <= 10^6 and star count 1 <= k <= 10^6
+ *      
+ *      There are exactly k more lines. Each line contains 0<=x<=10^9 and 0<=y<=10^9. no two lines are identical
+ *      
+ *      The input is guaranteed to obey the clustering constraint described above
+ *      
+ * Output:
+ *      If the PU described by the input has a galaxy containing more than half of the stars, display the number of stars
+ *      in the galaxy. Otherwise display NO
+ *      
+ *      
+ * Majority element algorithm will be best here.
+ * Use long instead of int for x and y
+*/
+
+/* GetInput()
+ * Calculate(stars)
+ * {
+ *      FindMajority(stars)
+ *      if(have majority)
+ *          return number of majority
+ *      else return false
+ * }
+ * ReturnOutput()
+*/
+
+
+
+
 namespace PS3_5_Galaxy_Quest
 {
     class Program
     {
+        #region Majority ALgorithm
         /// <summary>
         /// Finds and returns the majority element if it exists, else returns -1.
         /// </summary>
@@ -66,17 +109,24 @@ namespace PS3_5_Galaxy_Quest
             }
             return ret;
         }
+        #endregion
 
+        static bool IsInGalaxy(long[] a, long[] b, long dSquared)
+        {
+            long xSquared, ySquared;
+            xSquared = FastMult((a[0] - b[0]), (a[0] - b[0]));
+            ySquared = FastMult((a[1] - b[1]), (a[1] - b[1]));
+            if (xSquared + ySquared <= dSquared)
+                return true;
+            return false;
+        }
 
         static int CountOccurencesStar(List<long[]> A, long[] b, long dSquared)
         {
             int ret = 0;
-            long xSquared, ySquared;
             for (int i = 0; i < A.Count; i++)
             {
-                xSquared = FastMult((A[i][0] - b[0]), (A[i][0] - b[0]));
-                ySquared = FastMult((A[i][1] - b[1]), (A[i][1] - b[1]));
-                if (xSquared + ySquared <= dSquared)
+                if (IsInGalaxy(A[i], b, dSquared))
                     ret++;
             }
             return ret;
@@ -96,7 +146,7 @@ namespace PS3_5_Galaxy_Quest
             {
                 for (int i = 0; i < A.Count - 1; i += 2)
                 {
-                    if (A[i] == A[i + 1])
+                    if (IsInGalaxy(A[i], A[i + 1], dSquared))
                         Aprime.Add(A[i]);
                 }
                 x = FindMajorityStar(Aprime, dSquared);
@@ -127,17 +177,19 @@ namespace PS3_5_Galaxy_Quest
         {
             return a * b;
         }
-        
+
 
         static long CalculateGalaxies(List<long[]> stars, int d, int k)
         {
-            long ret = 0;
-            for (long i = 0; i < k; i += 2)
+            int ret = 0;
+            long[] the_star;
+            long dSquared = d * d;
+            the_star = FindMajorityStar(stars, dSquared);
+            for (int i = 0; i < stars.Count; i++)
             {
-
+                if (IsInGalaxy(the_star, stars[i], dSquared))
+                    ret++;
             }
-
-
 
             if (ret > 0)
                 return ret;
