@@ -130,7 +130,7 @@ namespace PS3_5_Galaxy_Quest
             return a * b;
         }
 
-        public int CalculateGalaxies(List<long[]> stars, int d, int k)
+        public int CalculateGalaxies(List<long[]> stars, long d, long k)
         {
             // Set ret for false.
             int ret = -1;
@@ -154,11 +154,9 @@ namespace PS3_5_Galaxy_Quest
 
         public static void Main(string[] args)
         {
-            Console.WriteLine(21/2);
-            /*
             string usr_input;
             string[] temp_nums;
-            int[] parameters;
+            long[] parameters;
             long[] temp_star = { 3, 8 };
             List<long[]> stars = new List<long[]>();
             long result = -1;
@@ -167,7 +165,7 @@ namespace PS3_5_Galaxy_Quest
             // as parameters[0] and parameters[1] respectively.
             usr_input = Console.ReadLine();
             temp_nums = usr_input.Split(' ');
-            parameters = Array.ConvertAll<string, int>(temp_nums, int.Parse);
+            parameters = Array.ConvertAll<string, long>(temp_nums, long.Parse);
             // Exactly k stars to read in.
             if (parameters[1] > 0)
             {
@@ -187,7 +185,6 @@ namespace PS3_5_Galaxy_Quest
             else
                 Console.WriteLine("NO");
             Console.Read();
-            */
         }
     }
 }
