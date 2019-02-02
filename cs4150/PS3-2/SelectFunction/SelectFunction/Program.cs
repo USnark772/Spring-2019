@@ -25,18 +25,17 @@ namespace SelectFunction
             if (A[midA] > B[midB])
             {
                 if (k <= (midA + midB))
-                    return SelectHelper(A, loA, midA + 1, B, loB, hiB, k);
+                    return SelectHelper(A, loA, midA - 1, B, loB, hiB, k);
                 else
                     return SelectHelper(A, loA, hiA, B, midB + 1, hiB, k);
             }
             else
             {
                 if (k <= (midA + midB))
-                    return SelectHelper(A, loA, hiA, B, loB, midB + 1, k);
+                    return SelectHelper(A, loA, hiA, B, loB, midB - 1, k);
                 else
-                    return SelectHelper(A, loA, midA + 1, B, loB, hiB, k);
+                    return SelectHelper(A, midA + 1, hiA, B, loB, hiB, k);
             }
-
         }
 
         static int Select(int[] A, int[] B, int k)

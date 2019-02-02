@@ -8,6 +8,90 @@ namespace GalaxyTests
     [TestClass]
     public class GalaxyTests1
     {
+        private bool IsInGalaxy(long[] a, long[] b, long dSquared)
+        {
+            long diffx, diffy, xSquared, ySquared;
+            // Calculate distance formula for the given elements using distance of dSquared.
+            diffx = (a[0] - b[0]);
+            diffy = (a[1] - b[1]);
+            xSquared = diffx * diffx;
+            ySquared = diffy * diffy;
+            if (xSquared + ySquared <= dSquared)
+                return true;
+            return false;
+        }
+        private List<long[]> MakeGalaxy(int d, int k)
+
+        {
+            int divd, HalfdSquared;
+            if (d % 2 == 1)
+            {
+                divd = (d - 1) / 2;
+                HalfdSquared = divd * divd;
+            }
+            else
+            {
+                divd = d / 2;
+                HalfdSquared = d * d;
+            }
+            Random rand = new Random();
+            List<long[]> stars = new List<long[]>();
+            int BigBorder = (int)Math.Pow(10, 9), temp_x, temp_y;
+            HashSet<long[]> used = new HashSet<long[]>();
+            long[] temp = new long[]{ 0, 0 }, first = new long[]{ 0, 0 };
+            temp_x = rand.Next(d * d, BigBorder - d * d);
+            temp[0] = temp_x;
+            temp_y = rand.Next(d * d, BigBorder - d * d);
+            temp[1] = temp_y;
+            first[0] = temp[0];
+            first[1] = temp[1];
+            stars.Add(temp);
+            used.Add(temp);
+            temp = new long[] { BigBorder, BigBorder };
+            // Make a galaxy with k - 1 stars around first.
+            for (int i = 0; i < k - 1; i++)
+            {
+                // Make a new random star within bounds that is unique
+                while (!IsInGalaxy(first, temp, HalfdSquared))
+                {
+                    while (used.Contains(temp))
+                    {
+                        temp_y = rand.Next((int)first[1] - d, (int)first[1] + d);
+                        temp_x = rand.Next((int)first[0] - d, (int)first[0] + d);
+                    }
+                    temp[0] = temp_x;
+                    temp[1] = temp_y;
+                }
+                used.Add(temp);
+                stars.Add(temp);
+                temp = new long[] { BigBorder, BigBorder };
+            }
+            return stars;
+        }
+        
+        [TestMethod]
+        public void TestIsInGalaxy()
+        {
+            long[] a = { 5, 8 };
+            long[] b = { 9, 20 };
+            int d = 13;
+            GalaxyQuester GQ = new GalaxyQuester();
+            PrivateObject PrivTester = new PrivateObject(GQ);
+            Assert.AreEqual(PrivTester.Invoke("IsInGalaxy", a, b, d*d), true);
+        }
+
+        [TestMethod]
+        public void TestIsInGalaxy2()
+        {
+            long[] a = { 5, 8 };
+            long[] b = { 9, 20 };
+            int d = 12;
+            GalaxyQuester GQ = new GalaxyQuester();
+            PrivateObject PrivTester = new PrivateObject(GQ);
+            Assert.AreEqual(PrivTester.Invoke("IsInGalaxy", a, b, d * d), false);
+        }
+
+
         [TestMethod]
         public void TestNOd10k4()
         {
