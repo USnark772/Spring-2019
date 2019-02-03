@@ -1,48 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PS4_5_Auto_Sink
 {
+    public class Vertex
+    {
+        public List<string> edges = new List<string>();
+        public int price = 0;
+        public int pre_value = 0;
+        public int post_value = 0;
+        public int top_sort_value = 0;
+        public Vertex() { }
+    }
+
+
+    /// <summary>
+    /// Manipulates a DAG for the purpose of calculating best routes between two places.
+    /// </summary>
     public class AutoSinker
     {
-        private Tuple<int, string>[] TopologicalSort(Dictionary<string, int> tolls, Dictionary<string, List<string>> highways)
-        {
-            Tuple<int, string>[] ret = new Tuple<int, string>[tolls.Count];
-
-            return ret;
-        }
-
-
-        private void DepthFirstSearch(Dictionary<string, List<string>> graph, ref Dictionary<string, int[]> pre_post_vals)
+        private void DepthFirstSearch(Dictionary<string, Vertex> graph)
         {
             int clock = 1;
-            Dictionary<string, bool> visited = new Dictionary<string, bool>();
-            foreach (var item in graph)
+            foreach (KeyValuePair<string, Vertex> vertex in graph)
             {
-                visited.Add(item.Key, false);
+                if (graph[vertex.Key].pre_value == 0)
+                    Explore(graph, vertex.Key, ref clock);
             }
-            foreach (var item in graph)
+        }
+
+        private void Explore(Dictionary<string, Vertex> graph, string v, ref int clock)
+        {
+            graph[v].pre_value = clock++;
+            foreach (string vertex in graph[v].edges)
             {
-                if (!visited[item.Key] == true)
-                    Explore(graph, item, ref pre_post_vals, clock);
+                if (graph[vertex].pre_value == 0)
+                    Explore(graph, vertex, ref clock);
             }
+            graph[v].post_value = clock++;
 
         }
 
-
-        private void Explore(Dictionary<string, List<string>> graph, KeyValuePair<string, List<string>> node, ref Dictionary<string, int[]> pre_post_vals, int clock)
+        /// <summary>
+        /// Use DFS to set pre and post values of given graph.
+        /// </summary>
+        /// <param name="graph"></param>
+        public void PrepGraph(Dictionary<string, Vertex> graph)
         {
-            
+            DepthFirstSearch(graph);
         }
-
-
-        public int CalculatePriceOfTrip(Dictionary<string, int> tolls, Dictionary<string, List<string>> highways, Tuple<string, string> trip)
+        public int CalculatePriceOfTrip(Dictionary<string, Vertex> graph, Tuple<string, string> trip)
         {
-            Dictionary<string, int[]> pre_post_vals = new Dictionary<string, int[]>();
-            DepthFirstSearch(highways, ref pre_post_vals);
+
             return -1;
         }
     }
@@ -55,9 +64,8 @@ namespace PS4_5_Auto_Sink
             string usr_input;
             int parameter, result = -1;
             string[] temp_usr_input;
-            Dictionary<string, int> tolls = new Dictionary<string, int>();
+            Dictionary<string, Vertex> graph = new Dictionary<string, Vertex>();
             Tuple<string, string>[] trips = new Tuple<string, string>[0];
-            Dictionary<string, List<string>> highways = new Dictionary<string, List<string>>();
             AutoSinker AS = new AutoSinker();
             // Get input
             for (int j = 0; j < 3; j++)
@@ -71,7 +79,8 @@ namespace PS4_5_Auto_Sink
                     {
                         usr_input = Console.ReadLine();
                         temp_usr_input = usr_input.Split(' ');
-                        tolls.Add(temp_usr_input[0], int.Parse(temp_usr_input[1]));
+                        graph.Add(temp_usr_input[0], new Vertex());
+                        graph[temp_usr_input[0]].price = int.Parse(temp_usr_input[1]);
                     }
                 }
                 else if (j == 1)
@@ -81,7 +90,7 @@ namespace PS4_5_Auto_Sink
                     {
                         usr_input = Console.ReadLine();
                         temp_usr_input = usr_input.Split(' ');
-                        highways[temp_usr_input[0]].Add(temp_usr_input[1]);
+                        graph[temp_usr_input[0]].edges.Add(temp_usr_input[1]);
                     }
                 }
                 else
@@ -97,9 +106,10 @@ namespace PS4_5_Auto_Sink
                     }
                 }
             }
-            foreach (var item in trips)
+            AS.PrepGraph(graph);
+            foreach (Tuple<string, string> trip in trips)
             {
-                result = AS.CalculatePriceOfTrip(tolls, highways, item);
+                result = AS.CalculatePriceOfTrip(graph, trip);
                 if (result > -1)
                     Console.WriteLine(result);
                 else
