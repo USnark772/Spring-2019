@@ -37,6 +37,7 @@ namespace PS4_5_Auto_Sink
             }
         }
 
+        // Need to figure out how to guarantee we start from source verticies.
         private void DepthFirstSearch(Dictionary<string, Vertex> graph)
         {
             int clock = 1;
@@ -75,7 +76,7 @@ namespace PS4_5_Auto_Sink
         public int CalculatePriceOfTrip(Dictionary<string, Vertex> graph, Tuple<string, string> trip)
         {
             // Not able to make trip.
-            if ((graph[trip.Item1].pre_value < graph[trip.Item2].pre_value) &&
+            if ((graph[trip.Item1].pre_value < graph[trip.Item2].pre_value) ||
                 (graph[trip.Item1].post_value > graph[trip.Item2].post_value))
             {
                 return -1;
@@ -85,7 +86,7 @@ namespace PS4_5_Auto_Sink
                 // Need to figure out path based on if next desired vertex
                 // is within pre/post bounds.
             }
-            return -1;
+            return 0;
         }
     }
 
