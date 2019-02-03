@@ -19,16 +19,35 @@ namespace PS4_5_Auto_Sink
     /// </summary>
     public class AutoSinker
     {
-        private void DepthFirstSearch(Dictionary<string, Vertex> graph)
+
+        private void MySort(Dictionary<string, Vertex> graph, string vertex)
         {
-            int clock = 1;
-            foreach (KeyValuePair<string, Vertex> vertex in graph)
+            string temp;
+            for (int i = 0; i < graph[vertex].edges.Count - 1; i++)
             {
-                if (graph[vertex.Key].pre_value == 0)
-                    Explore(graph, vertex.Key, ref clock);
+                for (int j = 0; j < graph[vertex].edges.Count - i - 1; j++)
+                {
+                    if (graph[graph[vertex].edges[j]].price > graph[graph[vertex].edges[j + 1]].price)
+                    {
+                        temp = graph[vertex].edges[j];
+                        graph[vertex].edges[j] = graph[vertex].edges[j + 1];
+                        graph[vertex].edges[j + 1] = temp;
+                    }
+                }
             }
         }
 
+        private void DepthFirstSearch(Dictionary<string, Vertex> graph)
+        {
+            int clock = 1;
+            foreach (string vertex in graph.Keys)
+            {
+                if (graph[vertex].pre_value == 0)
+                    Explore(graph, vertex, ref clock);
+            }
+        }
+
+        // Need to choose next vertex to explore based on lowest price.
         private void Explore(Dictionary<string, Vertex> graph, string v, ref int clock)
         {
             graph[v].pre_value = clock++;
@@ -47,11 +66,25 @@ namespace PS4_5_Auto_Sink
         /// <param name="graph"></param>
         public void PrepGraph(Dictionary<string, Vertex> graph)
         {
+            foreach (string vertex in graph.Keys)
+            {
+                MySort(graph, vertex);
+            }
             DepthFirstSearch(graph);
         }
         public int CalculatePriceOfTrip(Dictionary<string, Vertex> graph, Tuple<string, string> trip)
         {
-
+            // Not able to make trip.
+            if ((graph[trip.Item1].pre_value < graph[trip.Item2].pre_value) &&
+                (graph[trip.Item1].post_value > graph[trip.Item2].post_value))
+            {
+                return -1;
+            }
+            else
+            {
+                // Need to figure out path based on if next desired vertex
+                // is within pre/post bounds.
+            }
             return -1;
         }
     }
