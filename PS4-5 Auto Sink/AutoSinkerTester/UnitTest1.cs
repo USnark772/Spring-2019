@@ -23,10 +23,10 @@ namespace AutoSinkerTester
                 graph[cities[i]].price = prices[i];
             }
 
-            graph[cities[0]].edges.Add(cities[2]);
-            graph[cities[0]].edges.Add(cities[3]);
-            graph[cities[3]].edges.Add(cities[1]);
-            graph[cities[2]].edges.Add(cities[1]);
+            graph[cities[0]].edges_forward.Add(cities[2]);
+            graph[cities[0]].edges_forward.Add(cities[3]);
+            graph[cities[3]].edges_forward.Add(cities[1]);
+            graph[cities[2]].edges_forward.Add(cities[1]);
             trips[0] = new Tuple<string, string>(cities[0], cities[1]);
             trips[1] = new Tuple<string, string>(cities[2], cities[1]);
             trips[2] = new Tuple<string, string>(cities[1], cities[1]);
@@ -34,13 +34,10 @@ namespace AutoSinkerTester
             trips[4] = new Tuple<string, string>(cities[3], cities[0]);
             trips[5] = new Tuple<string, string>(cities[1], cities[0]);
             AutoSinker AS = new AutoSinker();
-            AS.PrepGraph(graph);
-            /*
             for (int i = 0; i < 4; i++)
             {
                 Assert.AreEqual(answers[i], AS.CalculatePriceOfTrip(graph, trips[i]));
             }
-            */
             for (int j = 4; j < 6; j++)
             {
                 Assert.AreEqual(answers[j], AS.CalculatePriceOfTrip(graph, trips[j]));
@@ -63,7 +60,6 @@ namespace AutoSinkerTester
             trips[0] = new Tuple<string, string>(cities[0], cities[1]);
             trips[1] = new Tuple<string, string>(cities[1], cities[1]);
             AutoSinker AS = new AutoSinker();
-            AS.PrepGraph(graph);
             Assert.AreEqual("NO", AS.CalculatePriceOfTrip(graph, trips[0]));
             Assert.AreEqual(0, AS.CalculatePriceOfTrip(graph, trips[1]));
         }
