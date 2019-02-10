@@ -56,16 +56,15 @@ namespace PS4_5_Auto_Sink
         #endregion
 
         #region MyAlgs
-        
-        // Having trouble if end node is not a sink, like from B to D in the in class example.
+
         private int GetPrice(Dictionary<string, Vertex> graph, int start, int end, string[] sorted)
         {
+            int current = end, temp_price, ret;
             foreach (string vert in graph.Keys)
             {
-                graph[vert].stage_price = int.MaxValue - 1;
+                graph[vert].stage_price = int.MaxValue;
             }
             graph[sorted[end]].stage_price = 0;
-            int current = end;
             while (current != start)
             {
                 current++;
@@ -73,10 +72,13 @@ namespace PS4_5_Auto_Sink
                 {
                     for (int i = 0; i < graph[sorted[current]].edges.Count; i++)
                     {
+                        temp_price = graph[graph[sorted[current]].edges[i]].stage_price + graph[graph[sorted[current]].edges[i]].price;
+                        if (temp_price < 0)
+                            temp_price = int.MaxValue;
                         if (graph[graph[sorted[current]].edges[i]].stage_price == int.MaxValue)
                             continue;
-                        if (graph[sorted[current]].stage_price > graph[graph[sorted[current]].edges[i]].stage_price + graph[graph[sorted[current]].edges[i]].price)
-                            graph[sorted[current]].stage_price = graph[graph[sorted[current]].edges[i]].stage_price + graph[graph[sorted[current]].edges[i]].price;
+                        if (graph[sorted[current]].stage_price > temp_price)
+                            graph[sorted[current]].stage_price = temp_price;
                     }
                 }
                 else
@@ -84,12 +86,15 @@ namespace PS4_5_Auto_Sink
                     graph[sorted[current]].stage_price = int.MaxValue;
                 }
             }
-            return graph[sorted[current]].stage_price;
+            ret = graph[sorted[current]].stage_price;
+            if (ret == int.MaxValue)
+                return -1;
+            return ret;
         }
 
         private int CalculatePriceOfTrip(Dictionary<string, Vertex> graph, Tuple<string, string> trip, string[] sorted)
         {
-            // Not able to make trip, return false.
+            // Know we cannot make trip, don't even try to calculate.
             if (graph[trip.Item1].post_value < graph[trip.Item2].post_value)
             {
                 return -1;
