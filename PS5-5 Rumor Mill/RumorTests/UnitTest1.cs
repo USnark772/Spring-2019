@@ -27,8 +27,9 @@ namespace RumorTests
                 friends[i] = new List<int>();
             }
             friends[0].Add(1);
+            friends[1].Add(0);
             reports_needed[0] = 1;
-            result = RM.GetReports(reports_needed, friends, id_list, students);
+            result = RM.GetReports(reports_needed, friends, id_list.Count, students);
             for (int i = 0; i < reports_needed.Length; i++)
             {
                 Assert.AreEqual(answers[i], result[i]);
@@ -55,11 +56,14 @@ namespace RumorTests
                 friends[i] = new List<int>();
             }
             friends[3].Add(2);
+            friends[2].Add(3);
             friends[4].Add(3);
+            friends[3].Add(4);
             friends[1].Add(4);
+            friends[4].Add(1);
             reports_needed[0] = 4;
             reports_needed[1] = 0;
-            result = RM.GetReports(reports_needed, friends, id_list, students);
+            result = RM.GetReports(reports_needed, friends, id_list.Count, students);
             for (int i = 0; i < reports_needed.Length; i++)
             {
                 Assert.AreEqual(answers[i], result[i]);
@@ -85,17 +89,27 @@ namespace RumorTests
                 friends[i] = new List<int>();
             }
             friends[0].Add(2);
+            friends[2].Add(0);
             friends[0].Add(3);
+            friends[3].Add(0);
             friends[3].Add(4);
+            friends[4].Add(3);
             friends[3].Add(5);
+            friends[5].Add(3);
             friends[4].Add(6);
+            friends[6].Add(4);
             friends[4].Add(7);
+            friends[7].Add(4);
             friends[6].Add(8);
+            friends[8].Add(6);
             friends[6].Add(9);
+            friends[9].Add(6);
             friends[7].Add(1);
+            friends[1].Add(7);
             friends[7].Add(11);
+            friends[11].Add(7);
             reports_needed[0] = 0;
-            result = RM.GetReports(reports_needed, friends, id_list, students);
+            result = RM.GetReports(reports_needed, friends, id_list.Count, students);
             for (int i = 0; i < reports_needed.Length; i++)
             {
                 Assert.AreEqual(answers[i], result[i]);

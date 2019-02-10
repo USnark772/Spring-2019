@@ -126,11 +126,11 @@ namespace PS5_5_Rumor_Mill
         }
 
         // For some reason, List<string>.sort is not sorting the way the Kattis problem wants it sorted.
-        private string GetReport(int starter, List<int>[] friends, Dictionary<string, int> id_list, string[] names)
+        private string GetReport(int starter, List<int>[] friends, int num_students, string[] names)
         {
-            string[] to_cat = new string[id_list.Count];
-            int[] dist = BFS(starter, friends, id_list.Count);
-            List<string>[] temp = new List<string>[id_list.Count];
+            string[] to_cat = new string[num_students];
+            List<string>[] temp = new List<string>[num_students];
+            int[] dist = BFS(starter, friends, num_students);
             for (int b = 0; b < temp.Length; b++)
             {
                 temp[b] = new List<string>();
@@ -151,20 +151,20 @@ namespace PS5_5_Rumor_Mill
             return string.Concat(to_cat).Trim();
         }
 
-
         /// <summary>
         /// Takes already prepared input and returns results
         /// </summary>
         /// <param name="starters"></param>
         /// <param name="friends"></param>
-        /// <param name="id_list"></param>
+        /// <param name="num_students"></param>
+        /// <param name="names"></param>
         /// <returns></returns>
-        public string[] GetReports(int[] starters, List<int>[] friends, Dictionary<string, int> id_list, string[] names)
+        public string[] GetReports(int[] starters, List<int>[] friends, int num_students, string[] names)
         {
             string[] ret = new string[starters.Length];
             for (int i = 0; i < starters.Length; i++)
             {
-                ret[i] = GetReport(starters[i], friends, id_list, names);
+                ret[i] = GetReport(starters[i], friends, num_students, names);
             }
             return ret;
         }
@@ -211,6 +211,7 @@ namespace PS5_5_Rumor_Mill
                         usr_input = Console.ReadLine();
                         temp_usr_input = usr_input.Split(' ');
                         friends[id_list[temp_usr_input[0]]].Add(id_list[temp_usr_input[1]]);
+                        friends[id_list[temp_usr_input[1]]].Add(id_list[temp_usr_input[0]]);
                     }
                 }
                 else
@@ -227,7 +228,7 @@ namespace PS5_5_Rumor_Mill
                     }
                 }
             }
-            return GetReports(starters, friends, id_list, names);
+            return GetReports(starters, friends, id_list.Count, names);
         }
 
 
