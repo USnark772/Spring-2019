@@ -54,7 +54,10 @@ namespace ChessBrowser
                     foreach (ChessGame game in games)
                     {
                         // create the command with the fields from ChessGame
-                        command.CommandText = "command stuff here like insert stuff";
+                        command.CommandText = "insert ignore into Events (Name, Site, Date) values(" + game.EventName + " " + game.SiteName + " " + game.Date + ");" + 
+                            "insert ignore into Games (Result, Moves, BlackPlayer, WhitePlayer, eID) values(" + game.Result + " " + game.Moves + " " + game.BlackPlayer + " " + game.WhitePlayer + " " + ");" + // Somehow need to get eID from DB in order to put it here?
+                            "insert ignore into Players (Name, Elo) values(" + game.WhitePlayer + " " + game.WhiteElo + ");" + 
+                            "insert ignore into Players (Name, Elo) values(" + game.BlackPlayer + " " + game.BlackElo + ");";
                         Console.WriteLine(command.CommandText);
                         command.ExecuteNonQuery();
                         WorkStepCompleted();
