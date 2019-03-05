@@ -46,7 +46,7 @@ namespace ChessTools
                 else if (line.StartsWith("[Date "))
                     date = ParseTag(line, 7);
                 else if (line.StartsWith("[Round "))
-                    eName = ParseTag(line, 8);
+                    round = ParseTag(line, 8);
                 else if (line.StartsWith("[White "))
                     wPlayer = ParseTag(line, 8);
                 else if (line.StartsWith("[Black "))
@@ -61,9 +61,7 @@ namespace ChessTools
                     eDate = ParseTag(line, 12);
                 else if (line.StartsWith("[Result "))
                     game_result = ParseTag(line, 9);
-                else if (line.StartsWith("[Round "))
-                    round = ParseTag(line, 9);
-                else if (line.Equals("\n"))
+                else if (line.Equals(""))
                 {
                     if (text)
                     {
@@ -78,10 +76,12 @@ namespace ChessTools
                 }
                 else if (text)
                     moves += line;
-                else if (full_game && !text)
+                if (full_game && !text)
                 {
                     result.Add(new ChessGame(eName, sName, date, round, wPlayer, bPlayer, game_result, wElo, bElo, ECO, eDate, moves));
                     moves = "";
+                    full_game = false;
+                    text = false;
                 }
             }
             return result;

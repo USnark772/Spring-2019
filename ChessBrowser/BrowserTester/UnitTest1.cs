@@ -13,10 +13,6 @@ namespace BrowserTester
         {
             string filepath = @"C:\Users\Snark\Downloads\kb1.pgn";
             List<ChessGame> result = PGNReader.ParseFile(filepath);
-            foreach (var item in result)
-            {
-                Console.WriteLine(item.EventName);
-            }
         }
     }
 }
