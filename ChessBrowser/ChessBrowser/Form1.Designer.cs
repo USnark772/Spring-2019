@@ -49,15 +49,27 @@ namespace ChessBrowser
                     // Open a connection
                     conn.Open();
                     MySqlCommand command = conn.CreateCommand();
-
                     // TODO: iterate through your data and generate appropriate insert commands
                     foreach (ChessGame game in games)
                     {
                         // create the command with the fields from ChessGame
-                        command.CommandText = "insert ignore into Events (Name, Site, Date) values(" + game.EventName + " " + game.SiteName + " " + game.Date + ");" + 
-                            "insert ignore into Games (Result, Moves, BlackPlayer, WhitePlayer, eID) values(" + game.Result + " " + game.Moves + " " + game.BlackPlayer + " " + game.WhitePlayer + " " + ");" + // Somehow need to get eID from DB in order to put it here?
-                            "insert ignore into Players (Name, Elo) values(" + game.WhitePlayer + " " + game.WhiteElo + ");" + 
-                            "insert ignore into Players (Name, Elo) values(" + game.BlackPlayer + " " + game.BlackElo + ");";
+                        command.CommandText = "" +
+                            "insert ignore into Events (Name, Site, Date) values(@event_name, @event_site_name, @event_date); " +
+                            "insert ignore into Players (Name, Elo) values(@wplayer_name, @wplayer_elo); " +
+                            "insert ignore into Players (Name, Elo) values (@bplayer_name, @bplayer_elo); " +
+                            "insert ignore into Games (Result, Moves, WhitePlayer, BlackPlayer, eID) values(@game_result, @game_moves, " +
+                            "(select w.pID from Players w where w.Name = @wplayer_name), " +
+                            "(select b.pID from Players b where b.Name = @bplayer_name), " +
+                            "(select e.eID from Events e where e.Name = @event_name and e.Date = @event_date))";
+                        command.Parameters.AddWithValue("@event_name", game.EventName);
+                        command.Parameters.AddWithValue("@event_date", game.EventDate);
+                        command.Parameters.AddWithValue("@event_site_name", game.SiteName);
+                        command.Parameters.AddWithValue("@wplayer_name", game.WhitePlayer);
+                        command.Parameters.AddWithValue("@wplayer_elo", game.WhiteElo);
+                        command.Parameters.AddWithValue("@bplayer_elo", game.BlackElo);
+                        command.Parameters.AddWithValue("@bplayer_name", game.BlackPlayer);
+                        command.Parameters.AddWithValue("@game_result", game.Result);
+                        command.Parameters.AddWithValue("@game_moves", game.Moves);
                         Console.WriteLine(command.CommandText);
                         command.ExecuteNonQuery();
                         WorkStepCompleted();
@@ -112,6 +124,9 @@ namespace ChessBrowser
                     //       then parse the results into an appropriate string
                     //       and return it.
                     //       Remember that the returned string must use \r\n newlines
+                    MySqlCommand command = conn.CreateCommand();
+                    command.CommandText = "query here";
+                    // How to send command?
                 }
                 catch (Exception e)
                 {

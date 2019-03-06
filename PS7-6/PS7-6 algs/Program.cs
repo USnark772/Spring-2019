@@ -53,7 +53,7 @@ namespace PS7_6_algs
               if y is even
                   return z^2 mod N
               else
-                  return x∙z^2 mod N 
+                  return x∙z^2 mod N
         */
         private long ModExp(long x, long y, long N)
         {
@@ -69,7 +69,7 @@ namespace PS7_6_algs
                 {
                     return MyMod((z * z), N);
                 }
-                else return MyMod((x * z * z), N);
+                else return MyMod(MyMod(x, N) * MyMod(z * z, N), N);
             }
         }
 
@@ -138,7 +138,7 @@ namespace PS7_6_algs
         /// </summary>
         /// <param name="p"></param>
         /// <param name="q"></param>
-        private void Key(long p, long q)
+        public string Key(long p, long q)
         {
             long N, e = 2, d;
             N = p * q;
@@ -150,19 +150,19 @@ namespace PS7_6_algs
                 temp = GCDHelper(e, thi);
             }
             d = InverseFinder(e, thi);
-            Console.WriteLine(N + " " + e + " " + d);
+            return (N + " " + e + " " + d);
         }
 
         /// <summary>
         /// Print yes if p (p > 5) passes the Fermat test for a = 2, 3, and 5; print no otherwise.
         /// </summary>
         /// <param name="p"></param>
-        private void IsPrime(long p)
+        public string IsPrime(long p)
         {
             if (ModExp(1, p - 1, p) == 1 && ModExp(3, p - 1, p) == 1 && ModExp(5, p - 1, p) == 1)
-                Console.WriteLine("yes");
+                return ("yes");
             else
-                Console.WriteLine("no");
+                return ("no");
         }
 
         /// <summary>
@@ -170,16 +170,16 @@ namespace PS7_6_algs
         /// </summary>
         /// <param name="a"></param>
         /// <param name="N"></param>
-        private void Inverse(long a, long N)
+        public string Inverse(long a, long N)
         {
             long res = InverseFinder(a, N);
             if (res >= 0)
             {
-                Console.WriteLine(res);
+                return (res.ToString());
             }
             else
             {
-                Console.WriteLine("none");
+                return ("none");
             }
         }
 
@@ -189,9 +189,9 @@ namespace PS7_6_algs
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="N"></param>
-        private void EXP(long x, long y, long N)
+        public string EXP(long x, long y, long N)
         {
-            Console.WriteLine(ModExp(x, y, N));
+            return (ModExp(x, y, N).ToString());
         }
 
         /// <summary>
@@ -199,54 +199,77 @@ namespace PS7_6_algs
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
-        private void GCD(long a, long b)
+        public string GCD(long a, long b)
         {
-            Console.WriteLine(GCDHelper(a, b));
+            return (GCDHelper(a, b).ToString());
         }
         #endregion
 
         static void Main(string[] args)
         {
+            Console.WriteLine("Starting the thing");
+            long factorial = 1;
+            int twenty = 20;
+            Console.WriteLine("starting first while");
+            while (twenty > 1)
+            {
+                factorial *= twenty;
+                Console.WriteLine(factorial);
+                twenty--;
+            }
+            Console.WriteLine(factorial);
+            Program Solver = new Program();
+            int i = 20;
+            Console.WriteLine("Starting second while");
+            while (Solver.Inverse(20, factorial) == "none" && i <= factorial)
+            {
+                //Console.WriteLine(i);
+                i++;
+            }
+            Console.WriteLine(i);
+            Console.WriteLine("Finished the thing");
+            Console.Read();
+            /*
             string usr_input;
             string[] temp_usr_input;
             long a = 0, b = 0, c = 0;
             Program Solver = new Program();
-            usr_input = Console.ReadLine();
-            while (!usr_input.Equals(""))
+            
+            while ((usr_input = Console.ReadLine()) != null)//!usr_input.Equals(null))
             {
                 temp_usr_input = usr_input.Split(' ');
                 if (temp_usr_input[0].Equals("gcd"))
                 {
                     long.TryParse(temp_usr_input[1], out a);
                     long.TryParse(temp_usr_input[2], out b);
-                    Solver.GCD(a, b);
+                    Console.WriteLine(Solver.GCD(a, b));
                 }
                 else if (temp_usr_input[0].Equals("exp"))
                 {
                     long.TryParse(temp_usr_input[1], out a);
                     long.TryParse(temp_usr_input[2], out b);
                     long.TryParse(temp_usr_input[3], out c);
-                    Solver.EXP(a, b, c);
+                    Console.WriteLine(Solver.EXP(a, b, c));
                 }
                 else if (temp_usr_input[0].Equals("inverse"))
                 {
                     long.TryParse(temp_usr_input[1], out a);
                     long.TryParse(temp_usr_input[2], out b);
-                    Solver.Inverse(a, b);
+                    Console.WriteLine(Solver.Inverse(a, b));
                 }
                 else if (temp_usr_input[0].Equals("isprime"))
                 {
                     long.TryParse(temp_usr_input[1], out a);
-                    Solver.IsPrime(a);
+                    Console.WriteLine(Solver.IsPrime(a));
                 }
                 else if (temp_usr_input[0].Equals("key"))
                 {
                     long.TryParse(temp_usr_input[1], out a);
                     long.TryParse(temp_usr_input[2], out b);
-                    Solver.Key(a, b);
+                    Console.WriteLine(Solver.Key(a, b));
                 }
-                usr_input = Console.ReadLine();
             }
+            */
         }
     }
 }
