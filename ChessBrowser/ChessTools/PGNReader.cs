@@ -26,6 +26,26 @@ namespace ChessTools
             return result;
         }
 
+
+        //1/2-1/2
+        //1-0
+        //0-1
+        static private string ParseResult(string line)
+        {
+            string ret = "";
+            string[] temp;
+            int white_result;
+            temp = line.Split('-');
+            white_result = int.Parse(temp[0]);
+            if (white_result == 1)
+                ret = "W";
+            else if (white_result == 0)
+                ret = "B";
+            else
+                ret = "D";
+            return ret;
+        }
+
         /// <summary>
         /// Takes a pgn file and parses it into a list of chess games.
         /// </summary>
@@ -35,7 +55,7 @@ namespace ChessTools
         {
             List<ChessGame> result = new List<ChessGame>();
             string eName = "", sName = "", eDate = "", date = "", round = "", wPlayer = "", bPlayer = "", wElo = "", 
-                bElo = "", game_result = "", moves = "", ECO = "";
+                bElo = "", game_result = "", moves = "", ECO = "", temp;
             bool text = false, full_game = false;
             foreach (string line in File.ReadLines(filename, Encoding.UTF8))
             {
@@ -60,7 +80,7 @@ namespace ChessTools
                 else if (line.StartsWith("[EventDate "))
                     eDate = ParseTag(line, 12);
                 else if (line.StartsWith("[Result "))
-                    game_result = ParseTag(line, 9);
+                    game_result = ParseResult(ParseTag(line, 9));
                 else if (line.Equals(""))
                 {
                     if (text)

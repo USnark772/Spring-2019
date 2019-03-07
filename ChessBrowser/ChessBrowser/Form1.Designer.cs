@@ -48,19 +48,27 @@ namespace ChessBrowser
                 {
                     // Open a connection
                     conn.Open();
-                    MySqlCommand command = conn.CreateCommand();
                     // TODO: iterate through your data and generate appropriate insert commands
                     foreach (ChessGame game in games)
                     {
+                        MySqlCommand command = conn.CreateCommand();
                         // create the command with the fields from ChessGame
                         command.CommandText = "" +
                             "insert ignore into Events (Name, Site, Date) values(@event_name, @event_site_name, @event_date); " +
-                            "insert ignore into Players (Name, Elo) values(@wplayer_name, @wplayer_elo); " +
-                            "insert ignore into Players (Name, Elo) values (@bplayer_name, @bplayer_elo); " +
+
+                            "insert into Players (Name, Elo) select @wplayer_name, @wplayer_elo from dual " +
+                            "where not exists (select * from Players where Name=@wplayer_name);" +
+                            "update Players set Elo=@wplayer_elo where Name=@wplayer_name and Elo<@wplayer_elo;" +
+
+                            "insert into Players (Name, Elo) select @bplayer_name, @bplayer_elo from dual " +
+                            "where not exists (select * from Players where Name=@bplayer_name);" +
+                            "update Players set Elo=@bplayer_elo where Name=@bplayer_name and Elo<@bplayer_elo;" +
+
                             "insert ignore into Games (Result, Moves, WhitePlayer, BlackPlayer, eID) values(@game_result, @game_moves, " +
                             "(select w.pID from Players w where w.Name = @wplayer_name), " +
                             "(select b.pID from Players b where b.Name = @bplayer_name), " +
-                            "(select e.eID from Events e where e.Name = @event_name and e.Date = @event_date))";
+                            "(select e.eID from Events e where e.Name = @event_name and e.Date = @event_date));";
+
                         command.Parameters.AddWithValue("@event_name", game.EventName);
                         command.Parameters.AddWithValue("@event_date", game.EventDate);
                         command.Parameters.AddWithValue("@event_site_name", game.SiteName);
