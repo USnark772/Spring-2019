@@ -27,9 +27,11 @@ namespace ChessTools
         }
 
 
-        //1/2-1/2
-        //1-0
-        //0-1
+        /// <summary>
+        /// Converts game results into "W", "B", or "D".
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
         static private string ParseResult(string line)
         {
             string ret = "";
