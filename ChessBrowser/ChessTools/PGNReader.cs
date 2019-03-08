@@ -34,12 +34,10 @@ namespace ChessTools
         {
             string ret = "";
             string[] temp;
-            int white_result;
             temp = line.Split('-');
-            white_result = int.Parse(temp[0]);
-            if (white_result == 1)
+            if (temp[0] == "1")
                 ret = "W";
-            else if (white_result == 0)
+            else if (temp[0] == "0")
                 ret = "B";
             else
                 ret = "D";
@@ -55,7 +53,7 @@ namespace ChessTools
         {
             List<ChessGame> result = new List<ChessGame>();
             string eName = "", sName = "", eDate = "", date = "", round = "", wPlayer = "", bPlayer = "", wElo = "", 
-                bElo = "", game_result = "", moves = "", ECO = "", temp;
+                bElo = "", game_result = "", moves = "", ECO = "";
             bool text = false, full_game = false;
             foreach (string line in File.ReadLines(filename, Encoding.UTF8))
             {

@@ -116,6 +116,26 @@ namespace ChessBrowser
 
             // Build up this string containing the results from your query
             string parsedResult = "";
+            string query = "select * from Games natural join Events where 1=1";
+            if (winner != "")
+            {
+                if (winner == "White")
+                    query += " and Result=\"W\"";
+                else if (winner == "Black")
+                    query += " and Result=\"B\"";
+                else if (winner == "Draw")
+                    query += " and Result=\"D\"";
+            }
+            if (white != "")
+                query += " and WhitePlayer=(select wp.pID from Players wp where Name=@wplayer";
+            if (black != "")
+                query += " and BlackPlayer=(select bp.pID from Players bp where Name=@bplayer";
+            if (opening != "")
+                query += " and Moves like @opening";
+            if (useDate)
+                query += " and Date>=@start and Date<=@end";
+
+            opening = "1. " + opening + "%";
 
             // Use this to count the number of rows returned by your query
             // (see below return statement)
@@ -133,7 +153,33 @@ namespace ChessBrowser
                     //       and return it.
                     //       Remember that the returned string must use \r\n newlines
                     MySqlCommand command = conn.CreateCommand();
-                    command.CommandText = "query here";
+                    command.CommandText = query;
+                    command.Parameters.AddWithValue("@wplayer", white);
+                    command.Parameters.AddWithValue("@bplayer", black);
+                    command.Parameters.AddWithValue("@opening", opening);
+                    command.Parameters.AddWithValue("@start", start.ToString());
+                    command.Parameters.AddWithValue("@end", end.ToString());
+                    Console.WriteLine("***** The command ******\n" + query);
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            parsedResult += 
+                                "Event: " + "\r\n" +
+                                "Site: " + "\r\n" +
+                                "Date: " + "\r\n" +
+                                "White: " + "\r\n" +
+                                "Black: " + "\r\n" +
+                                "Result: " + "\r\n\r\n";
+                            //parsedResult += "Result = " + reader["Result"] + ", gID = " + reader["gID"] +
+                            //    ", BlackPlayer pid = " + reader["BlackPlayer"] + ", WhitePlayer pid = " + reader["WhitePlayer"] +
+                            //    ", eID = " + reader["eID"];
+                            if (showMoves)
+                                parsedResult += "Moves = " + reader["Moves"];
+                            parsedResult += "\r\n";
+                            numRows++;
+                        }
+                    }
                     // How to send command?
                 }
                 catch (Exception e)
@@ -141,7 +187,6 @@ namespace ChessBrowser
                     Console.WriteLine(e.Message);
                 }
             }
-
             return numRows + " results\r\n\r\n" + parsedResult;
         }
 
