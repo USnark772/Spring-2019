@@ -116,7 +116,13 @@ namespace ChessBrowser
 
             // Build up this string containing the results from your query
             string parsedResult = "";
-            string query = "select * from Games natural join Events where 1=1";
+            string query = "select g.Result, p1.Name, p1.Elo, p2.Name, p2.Elo, e.Name, e.Site, cast(e.Date as char(10))";
+            if (showMoves)
+            {
+                query += ", g.Moves";
+            }
+            query += " from Games g join Players p1 join Players p2 join Events e " +
+                "where g.WhitePlayer = p1.pID and g.BlackPlayer = p2.pID and g.eID = e.eID";
             if (winner != "")
             {
                 if (winner == "White")
@@ -127,15 +133,14 @@ namespace ChessBrowser
                     query += " and Result=\"D\"";
             }
             if (white != "")
-                query += " and WhitePlayer=(select wp.pID from Players wp where Name=@wplayer";
+                query += " and WhitePlayer=(select wp.pID from Players wp where Name=@wplayer)";
             if (black != "")
-                query += " and BlackPlayer=(select bp.pID from Players bp where Name=@bplayer";
+                query += " and BlackPlayer=(select bp.pID from Players bp where Name=@bplayer)";
             if (opening != "")
                 query += " and Moves like @opening";
             if (useDate)
                 query += " and Date>=@start and Date<=@end";
-
-            opening = "1. " + opening + "%";
+            opening = "1." + opening + "%";
 
             // Use this to count the number of rows returned by your query
             // (see below return statement)
@@ -159,28 +164,28 @@ namespace ChessBrowser
                     command.Parameters.AddWithValue("@opening", opening);
                     command.Parameters.AddWithValue("@start", start.ToString());
                     command.Parameters.AddWithValue("@end", end.ToString());
-                    Console.WriteLine("***** The command ******\n" + query);
+                    //Console.WriteLine("***** The command ******\n" + query);
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            parsedResult += 
-                                "Event: " + "\r\n" +
-                                "Site: " + "\r\n" +
-                                "Date: " + "\r\n" +
-                                "White: " + "\r\n" +
-                                "Black: " + "\r\n" +
-                                "Result: " + "\r\n\r\n";
-                            //parsedResult += "Result = " + reader["Result"] + ", gID = " + reader["gID"] +
-                            //    ", BlackPlayer pid = " + reader["BlackPlayer"] + ", WhitePlayer pid = " + reader["WhitePlayer"] +
-                            //    ", eID = " + reader["eID"];
+                            parsedResult +=
+                                "Event: " + reader[5] + "\r\n" +
+                                "Site: " + reader[6] + "\r\n" +
+                                "Date: " + reader[7].ToString() + "\r\n" +
+                                "White: " + reader[1] + " (" + reader[2] + ")\r\n" +
+                                "Black: " + reader[3] + " (" + reader[4] + ")\r\n" +
+                                "Result: " + reader[0] + "\r\n\r\n";
                             if (showMoves)
-                                parsedResult += "Moves = " + reader["Moves"];
-                            parsedResult += "\r\n";
+                            {
+                                parsedResult += "Moves = " + reader[8];
+                                parsedResult += "\r\n\r\n";
+                            }
                             numRows++;
                         }
                     }
-                    // How to send command?
+                    
+
                 }
                 catch (Exception e)
                 {
