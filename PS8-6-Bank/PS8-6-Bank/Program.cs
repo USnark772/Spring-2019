@@ -34,27 +34,32 @@ namespace PS8_6_Bank
     {
         public class UserInput
         {
-            public int[] munnies, times;
+            public Dictionary<int, List<int>> ct = new Dictionary<int, List<int>>();
             public int N, T;
-            public UserInput() {}
+            public UserInput() { }
         }
+
         private UserInput GetInput()
         {
             UserInput ret = new UserInput();
             string usr_input;
+            int x, y;
             string[] temp_usr_input;
             usr_input = Console.ReadLine();
             temp_usr_input = usr_input.Split(' ');
             int.TryParse(temp_usr_input[0], out ret.N);
             int.TryParse(temp_usr_input[1], out ret.T);
-            ret.munnies = new int[ret.N];
-            ret.times = new int[ret.N];
+            for (int i = 0; i < ret.T; i++)
+            {
+                ret.ct.Add(i, new List<int>());
+            }
             for (int i = 0; i < ret.N; i++)
             {
                 usr_input = Console.ReadLine();
                 temp_usr_input = usr_input.Split(' ');
-                int.TryParse(temp_usr_input[0], out ret.munnies[i]);
-                int.TryParse(temp_usr_input[1], out ret.times[i]);
+                int.TryParse(temp_usr_input[0], out x);
+                int.TryParse(temp_usr_input[1], out y);
+                ret.ct[y].Add(x);
             }
             return ret;
         }
@@ -64,23 +69,21 @@ namespace PS8_6_Bank
         {
             int ret = 0;
             int[] best_choices = new int[the_stuff.T];
-
-            for (int j = 0; j < the_stuff.T; j++)
+            for (int i = the_stuff.T - 1; i >= 0; i--)
             {
-                best_choices[j] = 0;
-            }
-
-            for (int b = 0; b < the_stuff.N; b++)
-            {
-                if (best_choices[the_stuff.times[b]] < the_stuff.munnies[b])
-                    best_choices[the_stuff.times[b]] = the_stuff.munnies[b];
+                if (the_stuff.ct[i].Count > 0)
+                {
+                    best_choices[i] = the_stuff.ct[i].Max();
+                    the_stuff.ct[i].Remove(the_stuff.ct[i].Max());
+                    if (i > 0)
+                        the_stuff.ct[i - 1].AddRange(the_stuff.ct[i]);
+                }
             }
 
             for (int m = 0; m < the_stuff.T; m++)
             {
                 ret += best_choices[m];
             }
-
             return ret;
         }
 
@@ -92,21 +95,25 @@ namespace PS8_6_Bank
             else
             {
                 the_stuff = new UserInput();
-                the_stuff.munnies = munnies;
-                the_stuff.times = times;
+                for (int i = 0; i < T; i++)
+                {
+                    the_stuff.ct.Add(i, new List<int>());
+                }
+                for (int i = 0; i < N; i++)
+                {
+                    the_stuff.ct[times[i]].Add(munnies[i]);
+                }
                 the_stuff.N = N;
                 the_stuff.T = T;
             }
 
-            string ret = CalculateTotal(the_stuff).ToString();
-            return ret;
+            return CalculateTotal(the_stuff).ToString();
         }
 
         static void Main(string[] args)
         {
             Banker b = new Banker();
             Console.WriteLine(b.CalculateGreedyChoice());
-            Console.Read();
         }
     }
 }

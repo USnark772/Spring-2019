@@ -33,9 +33,10 @@ namespace BankerTester
             int[] time1 = new int[] { 1, 2, 2, 0 };
             int[] money2 = new int[] { 1000, 2000, 500 };
             int[] time2 = new int[] { 0, 1, 1 };
-            int[] answers = new int[] { 4200, 3000 };
+            string[] answers = new string[] { "4200", "3000" };
             Banker b = new Banker();
-
+            Assert.AreEqual(answers[0], b.CalculateGreedyChoice(4, 4, money1, time1));
+            Assert.AreEqual(answers[1], b.CalculateGreedyChoice(3, 4, money2, time2));
         }
     }
 }
