@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.489
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PS8-6-Bank", "PS8-6-Bank\PS8-6-Bank.csproj", "{5CB0C508-4F22-4AF6-AEA6-CB39D1D85EAF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5CB0C508-4F22-4AF6-AEA6-CB39D1D85EAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CB0C508-4F22-4AF6-AEA6-CB39D1D85EAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CB0C508-4F22-4AF6-AEA6-CB39D1D85EAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CB0C508-4F22-4AF6-AEA6-CB39D1D85EAF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {68DD2153-E794-48A6-A56E-D048138C4148}
+	EndGlobalSection
+EndGlobal
