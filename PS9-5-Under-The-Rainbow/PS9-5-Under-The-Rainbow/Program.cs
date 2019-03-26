@@ -64,11 +64,69 @@ namespace PS9_5_Under_The_Rainbow
     Sample output 2
     5000
     */
-    class Program
+    class RouteMaker
     {
+        /// <summary>
+        /// Get well formed input line by line from console
+        /// </summary>
+        /// <returns></returns>
+        private int[] GetInput()
+        {
+            int[] ret;
+            string usr_input;
+            usr_input = Console.ReadLine();
+            int n = int.Parse(usr_input);
+            ret = new int[n+2];
+            ret[0] = n;
+            for (int i = 1; i < n+2; i++)
+            {
+                ret[i] = int.Parse(Console.ReadLine());
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// Calculate the penalty if going from a to b
+        /// </summary>
+        /// <param name="k"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        private long Penalty(int k, int[] distance)
+        {
+            long ret = 0;
+            ret = (400 - (distance[k + 1] - distance[k]) * (400 - (distance[k + 1] - distance[k]))) + Penalty(k + 1, distance);
+            for (int j = k; j < distance[0]+1; j++)
+            {
+                ret = Math.Min(ret, ((400 - (distance[j] - distance[k]) * (400 - (distance[j] - distance[k]))) + Penalty(j, distance)));
+            }
+            // min as k ranges from i+1 to n  [ (400 - (distance[k] - distance[i]))2  +  penalty(k) ]
+            
+            // This part is almost right.
+            //long squared = (400 - (distance[k] - distance[i])) * (400 - (distance[k] - distance[i]));
+            //ret = Math.Min(squared, Penalty(k, i, distance));
+            return ret;
+        }
+
+        /// <summary>
+        /// Calculate the minimum penalty
+        /// </summary>
+        private int CalculateTotalMinPenalty(int[] distance)
+        {
+            int ret = 0;
+            return ret;
+        }
+
+        private void GiveOutput(int result)
+        {
+            Console.WriteLine(result);
+        }
+
         static void Main(string[] args)
         {
-
+            RouteMaker RM = new RouteMaker();
+            int[] input = RM.GetInput();
+            RM.GiveOutput(RM.CalculateTotalMinPenalty(input));
+            Console.Read();
         }
     }
 }
