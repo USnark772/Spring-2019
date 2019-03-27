@@ -76,47 +76,42 @@ namespace PS9_5_Under_The_Rainbow
             string usr_input;
             usr_input = Console.ReadLine();
             int n = int.Parse(usr_input);
-            ret = new int[n+2];
-            ret[0] = n;
-            for (int i = 1; i < n+2; i++)
+            ret = new int[n + 1];
+            for (int i = 0; i < n + 1; i++)
             {
                 ret[i] = int.Parse(Console.ReadLine());
             }
             return ret;
         }
 
-        /// <summary>
-        /// Calculate the penalty if going from a to b
-        /// </summary>
-        /// <param name="k"></param>
-        /// <param name="b"></param>
-        /// <returns></returns>
+
         private long Penalty(int k, int[] distance)
         {
-            long ret = 0;
-            ret = (400 - (distance[k + 1] - distance[k]) * (400 - (distance[k + 1] - distance[k]))) + Penalty(k + 1, distance);
-            for (int j = k; j < distance[0]+1; j++)
+            long ret, temp;
+            if (k == distance.Length - 1) // At Emerald City, no further trips to make
+                ret = 0;
+            else
             {
-                ret = Math.Min(ret, ((400 - (distance[j] - distance[k]) * (400 - (distance[j] - distance[k]))) + Penalty(j, distance)));
+                temp = 400 - (distance[k + 1] - distance[k]);
+                ret = (temp * temp) + Penalty(k + 1, distance);
+                for (int j = k + 2; j < distance.Length - 1; j++)
+                {
+                    temp = 400 - (distance[j] - distance[k]);
+                    ret = Math.Min(ret, (temp * temp) + Penalty(j, distance));
+                }
             }
-            // min as k ranges from i+1 to n  [ (400 - (distance[k] - distance[i]))2  +  penalty(k) ]
-            
-            // This part is almost right.
-            //long squared = (400 - (distance[k] - distance[i])) * (400 - (distance[k] - distance[i]));
-            //ret = Math.Min(squared, Penalty(k, i, distance));
             return ret;
         }
 
         /// <summary>
         /// Calculate the minimum penalty
         /// </summary>
-        private int CalculateTotalMinPenalty(int[] distance)
+        private long CalculateTotalMinPenalty(int[] distance)
         {
-            int ret = 0;
-            return ret;
+            return Penalty(0, distance);
         }
 
-        private void GiveOutput(int result)
+        private void GiveOutput(long result)
         {
             Console.WriteLine(result);
         }
