@@ -19,12 +19,12 @@ namespace PS10_5_Narrow_Art_Gallery
             tmp_usr_input = usr_input.Split(' ');
             int N = int.Parse(tmp_usr_input[0]);
             int k = int.Parse(tmp_usr_input[1]);
-            while (N != 0 && k != 0)
+            while (N != 0)
             {
-                gallery = new int[N + 2, 2];
+                gallery = new int[N + 1, 2];
                 gallery[0, 0] = N;
                 gallery[0, 1] = k;
-                for (int i = 2; i < N + 2; i += 2)
+                for (int i = 1; i < N + 1; i++)
                 {
                     usr_input = Console.ReadLine();
                     tmp_usr_input = usr_input.Split(' ');
@@ -40,48 +40,54 @@ namespace PS10_5_Narrow_Art_Gallery
             return ret;
         }
 
-        private int MaxVal(int r, int unclosable, int k, int[,] values)
+        private int MaxVal(int r, int unclosable, int k, int[,] values, Dictionary<Tuple<int, int, int>, int> calculated)
         {
+            Tuple<int, int, int> temp = new Tuple<int, int, int>(r, unclosable, k);
+            if (calculated.ContainsKey(temp))
+                return calculated[temp];
             int ret = 0;
-            int NminR = values[0, 0] - r;
-            if (k == NminR)
+            int NminR = values[0, 0] + 1 - r;
+            if (NminR == 0)
+                ret = 0;
+            else if (k == NminR)
             {
                 if (unclosable == 0)
-                    ret = values[r, 0] + MaxVal(r + 1, 0, k - 1, values);
+                    ret = values[r, 0] + MaxVal(r + 1, 0, k - 1, values, calculated);
                 else if (unclosable == 1)
-                    ret = values[r, 1] + MaxVal(r + 1, 1, k - 1, values);
-                else
+                    ret = values[r, 1] + MaxVal(r + 1, 1, k - 1, values, calculated);
+                else if (unclosable == -1)
                     ret = Math.Max(
-                        values[r, 0] + MaxVal(r + 1, 0, k - 1, values),
-                        values[r, 1] + MaxVal(r + 1, 1, k - 1, values));
+                        values[r, 0] + MaxVal(r + 1, 0, k - 1, values, calculated),
+                        values[r, 1] + MaxVal(r + 1, 1, k - 1, values, calculated));
             }
             else if (k < NminR && k > 0)
             {
                 if (unclosable == 0)
+
                     ret = Math.Max(
-                        values[r, 0] + MaxVal(r + 1, 0, k - 1, values),
-                        values[r, 0] + MaxVal(r + 1, -1, k, values));
+                        values[r, 0] + MaxVal(r + 1, 0, k - 1, values, calculated),
+                        values[r, 0] + values[r, 1] + MaxVal(r + 1, -1, k, values, calculated));
                 else if (unclosable == 1)
                     ret = Math.Max(
-                        values[r, 1] + MaxVal(r + 1, 1, k - 1, values),
-                        values[r, 1] + MaxVal(r + 1, -1, k, values));
-                else
+                        values[r, 1] + MaxVal(r + 1, 1, k - 1, values, calculated),
+                        values[r, 0] + values[r, 1] + MaxVal(r + 1, -1, k, values, calculated));
+                else if (unclosable == -1)
                     ret = Math.Max(
-                        values[r, 0] + values[r, 1] + MaxVal(r + 1, 0, k - 1, values),
+                        values[r, 0] + MaxVal(r + 1, 0, k - 1, values, calculated),
                         Math.Max(
-                        values[r, 0] + values[r, 1] + MaxVal(r + 1, 1, k - 1, values),
-                        values[r, 0] + values[r, 1] + MaxVal(r + 1, -1, k, values)));
+                        values[r, 1] + MaxVal(r + 1, 1, k - 1, values, calculated),
+                        values[r, 0] + values[r, 1] + MaxVal(r + 1, -1, k, values, calculated)));
             }
             else if (k == 0)
-                ret = 0;
+                ret = values[r, 0] + values[r, 1] + MaxVal(r + 1, -1, k, values, calculated);
+            calculated.Add(temp, ret);
             return ret;
         }
 
         public int SolveGallery(int[,] gallery)
         {
-            int ret = 0;
-
-            return ret;
+            Dictionary<Tuple<int, int, int>, int> calculated = new Dictionary<Tuple<int, int, int>, int>();
+            return MaxVal(1, -1, gallery[0, 1], gallery, calculated);
         }
 
         static void Main(string[] args)
