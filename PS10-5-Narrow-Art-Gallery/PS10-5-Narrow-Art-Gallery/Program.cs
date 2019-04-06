@@ -9,9 +9,8 @@ namespace PS10_5_Narrow_Art_Gallery
 {
     public class GallerySolver
     {
-        public List<int> SolveGalleries()
+        public void SolveGalleries()
         {
-            List<int> ret = new List<int>();
             int[,] gallery;
             string usr_input;
             string[] tmp_usr_input;
@@ -37,7 +36,6 @@ namespace PS10_5_Narrow_Art_Gallery
                 N = int.Parse(tmp_usr_input[0]);
                 k = int.Parse(tmp_usr_input[1]);
             }
-            return ret;
         }
 
         private int MaxVal(int r, int unclosable, int k, int[,] values, Dictionary<Tuple<int, int, int>, int> calculated)
