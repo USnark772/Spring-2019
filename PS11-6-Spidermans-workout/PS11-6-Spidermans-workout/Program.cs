@@ -24,24 +24,57 @@ namespace PS11_6_Spidermans_workout
                 dists[0] = M;
                 usr_input = Console.ReadLine();
                 tmp_usr_input = usr_input.Split(' ');
-                for (int i = 1; i < M+1; i++)
+                for (int i = 1; i < M + 1; i++)
                 {
-                    dists[i] = int.Parse(tmp_usr_input[i-1]);
+                    dists[i] = int.Parse(tmp_usr_input[i - 1]);
                 }
-                Console.WriteLine(SolveWorkout(dists));
+                Console.WriteLine(SolveWorkout(dists, 0, 0));
             }
         }
 
-        /// TODO: Implement this
-        private string SolveWorkout(int[] dists)
+        private int SolveWorkout(int[] dists, int start, int end)
         {
-            return "temp";
+            int updown = 0;
+            for (int i = start; i < end; i++)
+            {
+                
+            }
+            return -1;
+        }
+
+        // This does not work properly.
+        private string SolveWorkoutOld(int[] dists)
+        {
+            int updown = 0, maxhighet;
+            string[] moves = new string[dists[0]];
+            updown += dists[1];
+            maxhighet = updown;
+            moves[0] = "U";
+            for (int i = 2; i < dists[0] + 1; i++)
+            {
+                if (updown - dists[i] >= 0)
+                {
+                    updown -= dists[i];
+                    moves[i - 1] = "D";
+                }
+                else
+                {
+                    updown += dists[i];
+                    moves[i - 1] = "U";
+                }
+                if (updown > maxhighet)
+                    maxhighet = updown;
+            }
+            maxhighet += 2;
+            Console.WriteLine("maxheight = " + maxhighet);
+            return string.Join("", moves);
         }
 
         static void Main(string[] args)
         {
             ExercisePlanner EP = new ExercisePlanner();
             EP.GetInput();
+            Console.Read();
         }
     }
 }
