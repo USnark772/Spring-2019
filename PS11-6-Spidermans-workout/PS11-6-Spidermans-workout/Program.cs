@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PS11_6_Spidermans_workout
 {
-    class ExercisePlanner
+    public class ExercisePlanner
     {
         public void GetInput()
         {
@@ -28,18 +28,46 @@ namespace PS11_6_Spidermans_workout
                 {
                     dists[i] = int.Parse(tmp_usr_input[i - 1]);
                 }
-                Console.WriteLine(SolveWorkout(dists, 0, 0));
+                Console.WriteLine(SolveWorkout(dists, 1, dists[0]));
             }
         }
 
-        private int SolveWorkout(int[] dists, int start, int end)
+        public int SolveWorkout(int[] dists, int start, int end)
         {
-            int updown = 0;
-            for (int i = start; i < end; i++)
+            int ret = 0, min = 0, i;
+            i = start;
+            while (i <= end)
             {
-                
+                if (ret == 0)
+                    min = MinHeight(dists, i, end);
+                if (ret - dists[i] < 0)
+                {
+                    ret += dists[i];
+                    if (ret > min)
+                        min = ret;
+                }
+                else
+                {
+                    if (ret + dists[i] <= min)
+                        ret += dists[i];
+                    else
+                        ret -= dists[i];
+                }
+                i++;
             }
-            return -1;
+            return ret;
+        }
+
+
+        private int MinHeight(int[] dists, int start, int end)
+        {
+            int ret = -1;
+            for (int i = start; i <= end; i++)
+            {
+                if (dists[i] > ret)
+                    ret = dists[i];
+            }
+            return ret;
         }
 
         // This does not work properly.

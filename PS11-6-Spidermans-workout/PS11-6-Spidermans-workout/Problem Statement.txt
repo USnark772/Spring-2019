@@ -43,3 +43,21 @@ Sample Input 1		Sample Output 1
 7
 3 4 2 1 6 4 5
 
+Here is some advice on how to proceed
+
+1.	Use dynamic programming techniques to solve this problem
+
+2.	For the time being, forget about generating strings of U and D.  Instead, focus on solving for 
+	the minimum height to which Spiderman must rise in order to be able to end up back on the ground.  
+	(For cases in which ending up back on the ground is impossible, think of the minimum height as 
+	being infinite.)
+
+3.	Conceive of a way to describe subproblems using one or more parameters, so that the solution of
+	a particular subproblem can be expressed in terms of the solutions to simpler subproblems.
+
+4.	Produce a recursive function that implements this idea.
+
+5.	Memoize your recursive function.
+
+6.	Find a way to compute the proper sequence of U's and D's from the cache produced when solving a 
+	problem.
