@@ -70,8 +70,8 @@ namespace PS11_6_Spidermans_workout
             return ret;
         }
 
-        // This does not work properly.
-        private string SolveWorkoutOld(int[] dists)
+        // This does not work.
+        private string SolveWorkoutTry1(int[] dists)
         {
             int updown = 0, maxhighet;
             string[] moves = new string[dists[0]];

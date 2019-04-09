@@ -85,21 +85,25 @@ namespace PS9_5_Under_The_Rainbow
         }
 
 
-        private long Penalty(int k, int[] distance)
+        private long Penalty(int k, int[] distance, Dictionary<int, long> precalcs)
         {
             long ret, temp;
+            if (precalcs.ContainsKey(k))
+                return precalcs[k];
             if (k == distance.Length - 1) // At Emerald City, no further trips to make
                 ret = 0;
             else
             {
+                // min as k ranges from i+1 to n  [ (400 - (distance[k] - distance[i]))2  +  penalty(k) ]
                 temp = 400 - (distance[k + 1] - distance[k]);
-                ret = (temp * temp) + Penalty(k + 1, distance);
-                for (int j = k + 2; j < distance.Length - 1; j++)
+                ret = (temp * temp) + Penalty(k + 1, distance, precalcs);
+                for (int j = k + 2; j < distance.Length; j++)
                 {
                     temp = 400 - (distance[j] - distance[k]);
-                    ret = Math.Min(ret, (temp * temp) + Penalty(j, distance));
+                    ret = Math.Min(ret, (temp * temp) + Penalty(j, distance, precalcs));
                 }
             }
+            precalcs[k] = ret;
             return ret;
         }
 
@@ -108,7 +112,8 @@ namespace PS9_5_Under_The_Rainbow
         /// </summary>
         private long CalculateTotalMinPenalty(int[] distance)
         {
-            return Penalty(0, distance);
+            Dictionary<int, long> precalcs = new Dictionary<int, long>();
+            return Penalty(0, distance, precalcs);
         }
 
         private void GiveOutput(long result)

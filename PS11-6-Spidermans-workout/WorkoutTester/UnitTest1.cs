@@ -6,6 +6,7 @@ namespace WorkoutTester
     [TestClass]
     public class UnitTest1
     {
+
         [TestMethod]
         public void PublicTest1()
         {
@@ -55,7 +56,7 @@ namespace WorkoutTester
         }
 
         [TestMethod]
-        public void MyTest4()
+        public void MyTestToBeat2()
         {
             ExercisePlanner EP = new ExercisePlanner();
             int[] dists = { 4, 12, 3, 3, 6 };

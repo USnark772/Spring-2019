@@ -61,3 +61,8 @@ Here is some advice on how to proceed
 
 6.	Find a way to compute the proper sequence of U's and D's from the cache produced when solving a 
 	problem.
+
+
+Think about the way last kattis split things into subproblems. Think about using current height, 
+current index in array, and end index in array. Then try taking the min of the max height results 
+for each path.
