@@ -29,7 +29,6 @@ namespace PS11_6_Spidermans_workout
                     dists[i] = int.Parse(tmp_usr_input[i - 1]);
                 }
                 Console.WriteLine(SolveForSpiderman(dists));
-                //Console.WriteLine(MinHeight(dists, 1, 0));
             }
         }
 
@@ -41,7 +40,6 @@ namespace PS11_6_Spidermans_workout
                 return "IMPOSSIBLE";
             else
             {
-                // interperet moves
                 StringBuilder sb = new StringBuilder();
                 for (int i = dists[0] - 1; i >= 0; i--)
                 {
@@ -54,10 +52,8 @@ namespace PS11_6_Spidermans_workout
             }
         }
 
-        // TODO: Need to figure out how to pass moves take back up the line?
         public Tuple<int, List<int>> SolveWorkout(int[] dists, int current_index, int current_height, int move_taken)
         {
-            // item1 = current_height, item2 = min_height
             List<int> list_of_moves = new List<int>();
             Tuple<int, List<int>> minus_side = new Tuple<int, List<int>>(int.MaxValue, list_of_moves), plus_side, ret;
             if (current_index == dists.Length)
@@ -87,7 +83,6 @@ namespace PS11_6_Spidermans_workout
         }
 
 
-        // TODO: Need to figure out how to pass moves take back up the line?
         public int MinHeight(int[] dists, int current_index, int current_height)
         {
             int minus_side = int.MaxValue, plus_side;
@@ -102,11 +97,12 @@ namespace PS11_6_Spidermans_workout
             plus_side = MinHeight(dists, current_index + 1, current_height + dists[current_index]);
             return Math.Max(current_height, Math.Min(plus_side, minus_side));
         }
+
         static void Main(string[] args)
         {
             ExercisePlanner EP = new ExercisePlanner();
             EP.GetInput();
-            Console.Read();
+            //Console.Read();
         }
     }
 }
