@@ -28,74 +28,40 @@ namespace PS11_6_Spidermans_workout
                 {
                     dists[i] = int.Parse(tmp_usr_input[i - 1]);
                 }
-                Console.WriteLine(SolveWorkout(dists, 1, dists[0]));
-            }
-        }
-
-        public int SolveWorkout(int[] dists, int start, int end)
-        {
-            int ret = 0, min = 0, i;
-            i = start;
-            while (i <= end)
-            {
-                if (ret == 0)
-                    min = MinHeight(dists, i, end);
-                if (ret - dists[i] < 0)
-                {
-                    ret += dists[i];
-                    if (ret > min)
-                        min = ret;
-                }
+                Tuple<int, int, int> solution = SolveWorkout(dists, 1, dists[0], 0, -1);
+                if(solution.Item1 != 0)
+                    Console.WriteLine("IMPOSSIBLE");
+                Console.WriteLine(solution.Item1);
+                /*
+                if (solution.Item1 == 0)
+                    Console.WriteLine("Made it back down with min height: " + solution.Item2);
                 else
-                {
-                    if (ret + dists[i] <= min)
-                        ret += dists[i];
-                    else
-                        ret -= dists[i];
-                }
-                i++;
+                    Console.WriteLine("Didn't make it back down, min height = " + solution.Item2);
+                */
             }
-            return ret;
         }
 
-
-        private int MinHeight(int[] dists, int start, int end)
+        // TODO: Need to figure out how to pass moves take back up the line?
+        public Tuple<int, int, int> SolveWorkout(int[] dists, int current_index, int end, int current_height, int move_taken)
         {
-            int ret = -1;
-            for (int i = start; i <= end; i++)
+            // item1 = current_height, item2 = min_height
+            Tuple<int, int, int> minus_side = new Tuple<int, int, int>(int.MaxValue, -1, -1), plus_side, ret;
+            if (current_index == end + 1)
             {
-                if (dists[i] > ret)
-                    ret = dists[i];
-            }
-            return ret;
-        }
-
-        // This does not work.
-        private string SolveWorkoutTry1(int[] dists)
-        {
-            int updown = 0, maxhighet;
-            string[] moves = new string[dists[0]];
-            updown += dists[1];
-            maxhighet = updown;
-            moves[0] = "U";
-            for (int i = 2; i < dists[0] + 1; i++)
-            {
-                if (updown - dists[i] >= 0)
-                {
-                    updown -= dists[i];
-                    moves[i - 1] = "D";
-                }
+                if (current_height > 0)
+                    return new Tuple<int, int, int>(current_height, int.MaxValue, move_taken);
                 else
-                {
-                    updown += dists[i];
-                    moves[i - 1] = "U";
-                }
-                if (updown > maxhighet)
-                    maxhighet = updown;
+                    return new Tuple<int, int, int>(current_height, current_height, move_taken);
             }
-            maxhighet += 2;
-            Console.WriteLine("maxheight = " + maxhighet);
-            return string.Join("", moves);
+            if (current_height - dists[current_index] >= 0)
+                minus_side = SolveWorkout(dists, current_index + 1, end, current_height - dists[current_index], 0);
+            plus_side = SolveWorkout(dists, current_index + 1, end, current_height + dists[current_index], 1);
+            if (plus_side.Item1 < minus_side.Item1)
+                ret = new Tuple<int, int, int>(plus_side.Item1, Math.Max(current_height, plus_side.Item2), move_taken);
+            else
+                ret = new Tuple<int, int, int>(minus_side.Item1, Math.Max(current_height, minus_side.Item2), move_taken);
+            Console.WriteLine("Results are in at: " + ret.Item1 + " " + ret.Item2);
+            return ret;
         }
 
         static void Main(string[] args)
