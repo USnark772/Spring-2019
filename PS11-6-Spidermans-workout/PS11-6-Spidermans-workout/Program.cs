@@ -29,14 +29,15 @@ namespace PS11_6_Spidermans_workout
                     dists[i] = int.Parse(tmp_usr_input[i - 1]);
                 }
                 Console.WriteLine(SolveForSpiderman(dists));
+                //Console.WriteLine(MinHeight(dists, 1, 0));
             }
         }
 
 
         public string SolveForSpiderman(int[] dists)
         {
-            Tuple<int, int, List<int>> solution = SolveWorkout(dists, 1, dists[0], 0, -1);
-            if (solution.Item1 != 0)
+            Tuple<int, List<int>> solution = SolveWorkout(dists, 1, 0, -1);
+            if (solution.Item1 == int.MaxValue)
                 return "IMPOSSIBLE";
             else
             {
@@ -44,9 +45,9 @@ namespace PS11_6_Spidermans_workout
                 StringBuilder sb = new StringBuilder();
                 for (int i = dists[0] - 1; i >= 0; i--)
                 {
-                    if (solution.Item3[i] == 1)
+                    if (solution.Item2[i] == 1)
                         sb.Append('U');
-                    else if (solution.Item3[i] == 0)
+                    else if (solution.Item2[i] == 0)
                         sb.Append('D');
                 }
                 return sb.ToString();
@@ -54,37 +55,53 @@ namespace PS11_6_Spidermans_workout
         }
 
         // TODO: Need to figure out how to pass moves take back up the line?
-        public Tuple<int, int, List<int>> SolveWorkout(int[] dists, int current_index, int end, int current_height, int move_taken)
+        public Tuple<int, List<int>> SolveWorkout(int[] dists, int current_index, int current_height, int move_taken)
         {
             // item1 = current_height, item2 = min_height
             List<int> list_of_moves = new List<int>();
-            Tuple<int, int, List<int>> minus_side = new Tuple<int, int, List<int>>(int.MaxValue, -1, list_of_moves), plus_side, ret;
-            if (current_index == end + 1)
+            Tuple<int, List<int>> minus_side = new Tuple<int, List<int>>(int.MaxValue, list_of_moves), plus_side, ret;
+            if (current_index == dists.Length)
             {
                 list_of_moves.Add(move_taken);
                 if (current_height > 0)
-                    return new Tuple<int, int, List<int>>(current_height, int.MaxValue, list_of_moves);
+                    return new Tuple<int, List<int>>(int.MaxValue, list_of_moves);
                 else
-                    return new Tuple<int, int, List<int>>(current_height, current_height, list_of_moves);
+                    return new Tuple<int, List<int>>(current_height, list_of_moves);
             }
             if (current_height - dists[current_index] >= 0)
-                minus_side = SolveWorkout(dists, current_index + 1, end, current_height - dists[current_index], 0);
-            plus_side = SolveWorkout(dists, current_index + 1, end, current_height + dists[current_index], 1);
+                minus_side = SolveWorkout(dists, current_index + 1, current_height - dists[current_index], 0);
+            plus_side = SolveWorkout(dists, current_index + 1, current_height + dists[current_index], 1);
             if (plus_side.Item1 < minus_side.Item1)
             {
-                list_of_moves = plus_side.Item3;
+                list_of_moves = plus_side.Item2;
                 list_of_moves.Add(move_taken);
-                ret = new Tuple<int, int, List<int>>(plus_side.Item1, Math.Max(current_height, plus_side.Item2), list_of_moves);
+                ret = new Tuple<int, List<int>>(Math.Max(current_height, plus_side.Item1), list_of_moves);
             }
             else
             {
-                list_of_moves = minus_side.Item3;
+                list_of_moves = minus_side.Item2;
                 list_of_moves.Add(move_taken);
-                ret = new Tuple<int, int, List<int>>(minus_side.Item1, Math.Max(current_height, minus_side.Item2), list_of_moves);
+                ret = new Tuple<int, List<int>>(Math.Max(current_height, minus_side.Item1), list_of_moves);
             }
             return ret;
         }
 
+
+        // TODO: Need to figure out how to pass moves take back up the line?
+        public int MinHeight(int[] dists, int current_index, int current_height)
+        {
+            int minus_side = int.MaxValue, plus_side;
+            if (current_index == dists.Length)
+            {
+                if (current_height > 0)
+                    return int.MaxValue;
+                return current_height;
+            }
+            if (current_height - dists[current_index] >= 0)
+                minus_side = MinHeight(dists, current_index + 1, current_height - dists[current_index]);
+            plus_side = MinHeight(dists, current_index + 1, current_height + dists[current_index]);
+            return Math.Max(current_height, Math.Min(plus_side, minus_side));
+        }
         static void Main(string[] args)
         {
             ExercisePlanner EP = new ExercisePlanner();

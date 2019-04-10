@@ -43,7 +43,7 @@ namespace WorkoutTester
         {
             ExercisePlanner EP = new ExercisePlanner();
             int[] dists = { 9, 3, 2, 5, 3, 1, 2, 3, 3, 6 };
-            Assert.AreEqual("UUDUDDUUD", EP.SolveForSpiderman(dists));
+            Assert.AreEqual("UDUDDDUUD", EP.SolveForSpiderman(dists));
         }
 
         [TestMethod]
@@ -67,7 +67,7 @@ namespace WorkoutTester
         {
             ExercisePlanner EP = new ExercisePlanner();
             int[] dists = { 7, 5, 3, 3, 10, 3, 13, 5 };
-            Assert.AreEqual("UUDUUDD", EP.SolveForSpiderman(dists));
+            Assert.AreEqual("UDUUUDD", EP.SolveForSpiderman(dists));
         }
     }
 }
