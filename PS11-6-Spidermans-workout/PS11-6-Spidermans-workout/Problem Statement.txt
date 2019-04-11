@@ -66,3 +66,109 @@ Here is some advice on how to proceed
 Think about the way last kattis split things into subproblems. Think about using current height, 
 current index in array, and end index in array. Then try taking the min of the max height results 
 for each path.
+
+
+
+public string SolveForSpiderman(int[] dists)
+        {
+            /*
+            Dictionary<Tuple<int, int, int>, Tuple<int, List<int>>> cache = new Dictionary<Tuple<int, int, int>, Tuple<int, List<int>>>();
+            Tuple<int, int, int> key = new Tuple<int, int, int>(1, 0, -1);
+            //Tuple<int, List<int>> solution = SolveWorkoutCached(dists, key, cache);
+            //Tuple<int, List<int>> solution = SolveWorkoutNoCache(dists, 1, 0, -1);
+            if (solution.Item1 == int.MaxValue)
+                return "IMPOSSIBLE";
+            else
+            {
+                StringBuilder sb = new StringBuilder();
+                for (int i = dists[0] - 1; i >= 0; i--)
+                {
+                    if (solution.Item2[i] == 1)
+                        sb.Append('U');
+                    else if (solution.Item2[i] == 0)
+                        sb.Append('D');
+                }
+                return sb.ToString();
+            }
+            */
+
+        // Tuple<int current_index, int current_height, int move_taken> key
+        public Tuple<int, List<int>> SolveWorkoutCached(int[] dists, Tuple<int, int, int> key, Dictionary<Tuple<int, int, int>, Tuple<int, List<int>>> cache)
+        {
+            List<int> list_of_moves = new List<int>();
+            Tuple<int, List<int>> minus_side = new Tuple<int, List<int>>(int.MaxValue, list_of_moves), plus_side, ret;
+            Tuple<int, int, int> min_key = new Tuple<int, int, int>(-1, -1, -1), plus_key;
+            if (key.Item1 == dists.Length)
+            {
+                list_of_moves.Add(key.Item3);
+                if (key.Item2 > 0)
+                    return new Tuple<int, List<int>>(int.MaxValue, list_of_moves);
+                else
+                    return new Tuple<int, List<int>>(key.Item2, list_of_moves);
+            }
+            if (key.Item2 - dists[key.Item1] >= 0)
+            {
+                min_key = new Tuple<int, int, int>(key.Item1 + 1, key.Item2 - dists[key.Item1], 0);
+                minus_side = SolveWorkoutCached(dists, min_key, cache);
+            }
+            plus_key = new Tuple<int, int, int>(key.Item1 + 1, key.Item2 + dists[key.Item1], 1);
+            plus_side = SolveWorkoutCached(dists, plus_key, cache);
+            if (plus_side.Item1 < minus_side.Item1)
+            {
+                list_of_moves = plus_side.Item2;
+                list_of_moves.Add(key.Item3);
+                ret = new Tuple<int, List<int>>(Math.Max(key.Item2, plus_side.Item1), list_of_moves);
+            }
+            else
+            {
+                list_of_moves = minus_side.Item2;
+                list_of_moves.Add(key.Item3);
+                ret = new Tuple<int, List<int>>(Math.Max(key.Item2, minus_side.Item1), list_of_moves);
+            }
+            return ret;
+        }
+        public Tuple<int, List<int>> SolveWorkoutNoCache(int[] dists, int current_index, int current_height, int move_taken)
+        {
+            List<int> list_of_moves = new List<int>();
+            Tuple<int, List<int>> minus_side = new Tuple<int, List<int>>(int.MaxValue, list_of_moves), plus_side, ret;
+            if (current_index == dists.Length)
+            {
+                list_of_moves.Add(move_taken);
+                if (current_height > 0)
+                    return new Tuple<int, List<int>>(int.MaxValue, list_of_moves);
+                else
+                    return new Tuple<int, List<int>>(current_height, list_of_moves);
+            }
+            if (current_height - dists[current_index] >= 0)
+                minus_side = SolveWorkoutNoCache(dists, current_index + 1, current_height - dists[current_index], 0);
+            plus_side = SolveWorkoutNoCache(dists, current_index + 1, current_height + dists[current_index], 1);
+            if (plus_side.Item1 < minus_side.Item1)
+            {
+                list_of_moves = plus_side.Item2;
+                list_of_moves.Add(move_taken);
+                ret = new Tuple<int, List<int>>(Math.Max(current_height, plus_side.Item1), list_of_moves);
+            }
+            else
+            {
+                list_of_moves = minus_side.Item2;
+                list_of_moves.Add(move_taken);
+                ret = new Tuple<int, List<int>>(Math.Max(current_height, minus_side.Item1), list_of_moves);
+            }
+            return ret;
+        }
+
+
+        public int MinHeightOriginal(int[] dists, int current_index, int current_height)
+        {
+            int minus_side = int.MaxValue, plus_side;
+            if (current_index == dists.Length)
+            {
+                if (current_height > 0)
+                    return int.MaxValue;
+                return current_height;
+            }
+            if (current_height - dists[current_index] >= 0)
+                minus_side = MinHeightOriginal(dists, current_index + 1, current_height - dists[current_index]);
+            plus_side = MinHeightOriginal(dists, current_index + 1, current_height + dists[current_index]);
+            return Math.Max(current_height, Math.Min(plus_side, minus_side));
+        }

@@ -20,82 +20,72 @@ namespace PS11_6_Spidermans_workout
                 N--;
                 usr_input = Console.ReadLine();
                 int M = int.Parse(usr_input);
-                dists = new int[M + 1];
-                dists[0] = M;
+                dists = new int[M];
                 usr_input = Console.ReadLine();
                 tmp_usr_input = usr_input.Split(' ');
-                for (int i = 1; i < M + 1; i++)
+                for (int i = 0; i < M; i++)
                 {
-                    dists[i] = int.Parse(tmp_usr_input[i - 1]);
+                    dists[i] = int.Parse(tmp_usr_input[i]);
                 }
                 Console.WriteLine(SolveForSpiderman(dists));
             }
         }
 
-
         public string SolveForSpiderman(int[] dists)
         {
-            Tuple<int, List<int>> solution = SolveWorkout(dists, 1, 0, -1);
-            if (solution.Item1 == int.MaxValue)
+            StringBuilder sb = new StringBuilder();
+            string[] answer = new string[dists.Length];
+            Dictionary<Tuple<int, int>, int> other_cache = new Dictionary<Tuple<int, int>, int>();
+            int result = MinHeight(dists, new Tuple<int, int>(0, 0), other_cache);
+            if (result == int.MaxValue)
                 return "IMPOSSIBLE";
-            else
+            int path = 0;
+            for (int i = 0; i < dists.Length; i++)
             {
-                StringBuilder sb = new StringBuilder();
-                for (int i = dists[0] - 1; i >= 0; i--)
+                if (other_cache[new Tuple<int, int>(i + 1, path + dists[i])] <= result)
                 {
-                    if (solution.Item2[i] == 1)
-                        sb.Append('U');
-                    else if (solution.Item2[i] == 0)
-                        sb.Append('D');
+                    path += dists[i];
+                    answer[i] = "U";
                 }
-                return sb.ToString();
-            }
-        }
-
-        public Tuple<int, List<int>> SolveWorkout(int[] dists, int current_index, int current_height, int move_taken)
-        {
-            List<int> list_of_moves = new List<int>();
-            Tuple<int, List<int>> minus_side = new Tuple<int, List<int>>(int.MaxValue, list_of_moves), plus_side, ret;
-            if (current_index == dists.Length)
-            {
-                list_of_moves.Add(move_taken);
-                if (current_height > 0)
-                    return new Tuple<int, List<int>>(int.MaxValue, list_of_moves);
                 else
-                    return new Tuple<int, List<int>>(current_height, list_of_moves);
+                {
+                    path -= dists[i];
+                    answer[i] = "D";
+                }
             }
-            if (current_height - dists[current_index] >= 0)
-                minus_side = SolveWorkout(dists, current_index + 1, current_height - dists[current_index], 0);
-            plus_side = SolveWorkout(dists, current_index + 1, current_height + dists[current_index], 1);
-            if (plus_side.Item1 < minus_side.Item1)
-            {
-                list_of_moves = plus_side.Item2;
-                list_of_moves.Add(move_taken);
-                ret = new Tuple<int, List<int>>(Math.Max(current_height, plus_side.Item1), list_of_moves);
-            }
-            else
-            {
-                list_of_moves = minus_side.Item2;
-                list_of_moves.Add(move_taken);
-                ret = new Tuple<int, List<int>>(Math.Max(current_height, minus_side.Item1), list_of_moves);
-            }
-            return ret;
+            return String.Join("", answer);
         }
 
-
-        public int MinHeight(int[] dists, int current_index, int current_height)
+        public int MinHeight(int[] dists, Tuple<int, int> key, Dictionary<Tuple<int, int>, int> cache)
         {
             int minus_side = int.MaxValue, plus_side;
-            if (current_index == dists.Length)
+            Tuple<int, int> min_key, plus_key;
+            if (key.Item1 == dists.Length)
             {
-                if (current_height > 0)
+                if (key.Item2 > 0)
                     return int.MaxValue;
-                return current_height;
+                return key.Item2;
             }
-            if (current_height - dists[current_index] >= 0)
-                minus_side = MinHeight(dists, current_index + 1, current_height - dists[current_index]);
-            plus_side = MinHeight(dists, current_index + 1, current_height + dists[current_index]);
-            return Math.Max(current_height, Math.Min(plus_side, minus_side));
+            if (key.Item2 - dists[key.Item1] >= 0)
+            {
+                min_key = new Tuple<int, int>(key.Item1 + 1, key.Item2 - dists[key.Item1]);
+                if (cache.ContainsKey(min_key))
+                    minus_side = cache[min_key];
+                else
+                {
+                    minus_side = MinHeight(dists, min_key, cache);
+                    cache.Add(min_key, minus_side);
+                }
+            }
+            plus_key = new Tuple<int, int>(key.Item1 + 1, key.Item2 + dists[key.Item1]);
+            if (cache.ContainsKey(plus_key))
+                plus_side = cache[plus_key];
+            else
+            {
+                plus_side = MinHeight(dists, plus_key, cache);
+                cache.Add(plus_key, plus_side);
+            }
+            return Math.Max(key.Item2, Math.Min(plus_side, minus_side));
         }
 
         static void Main(string[] args)
